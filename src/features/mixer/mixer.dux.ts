@@ -42,7 +42,7 @@ interface Action<T = any> {
 }
 
 // Reusable action function type
-type ActionCreator<P> = (payload: P) => Action<P>;
+type ActionCreator<P> = (payload?: P) => Action<P>;
 
 // AudioControlsDux object
 export const AudioControlsDux = {
@@ -102,31 +102,31 @@ export const updateBinauralBeats: UpdateBinauralBeats = (payload = {}) => ({
 
 type UpdateReverb = ActionCreator<Partial<Reverb>>;
 export const updateReverb: UpdateReverb = (payload = {}) => ({
-  type: `${AudioControlsDux.slice}/updateReverb`,
+  type: `${AudioControlsDux.slice}/updateReverb` as const,
   payload
 });
 
 type UpdateNoise = ActionCreator<Partial<Noise>>;
 export const updateNoise: UpdateNoise = (payload = {}) => ({
-  type: `${AudioControlsDux.slice}/updateNoise`,
+  type: `${AudioControlsDux.slice}/updateNoise` as const,
   payload
 });
 
 type UpdateMixerChannel = ActionCreator<{ channelName: MixerChannelName } & Partial<MixerChannel>>;
 export const updateMixerChannel: UpdateMixerChannel = (payload = { channelName: 'binauralBeats' }) => ({
-  type: `${AudioControlsDux.slice}/updateMixerChannel`,
+  type: `${AudioControlsDux.slice}/updateMixerChannel` as const,
   payload
 });
 
 type SetPlaybackState = ActionCreator<boolean>;
 export const setPlaybackState: SetPlaybackState = (payload = false) => ({
-  type: `${AudioControlsDux.slice}/setPlaybackState`,
+  type: `${AudioControlsDux.slice}/setPlaybackState` as const,
   payload
 });
 
 type SetMasterVolume = ActionCreator<number>;
 export const setMasterVolume: SetMasterVolume = (payload = 0.75) => ({
-  type: `${AudioControlsDux.slice}/setMasterVolume`,
+  type: `${AudioControlsDux.slice}/setMasterVolume` as const,
   payload
 });
 
@@ -140,7 +140,9 @@ export const reducer: Reducer<AudioControlsState, Action> = (state = AudioContro
     case updateNoise().type:
       return { ...state, noise: { ...state.noise, ...action.payload } };
     case updateMixerChannel().type:
-      const { channelName, ...channelUpdates } = action.payload;
+      const { channelName, ...channelUpdates } = action.payload as {
+        channelName: MixerChannelName;
+      } & Partial<MixerChannel>;
       return {
         ...state,
         mixerChannels: {
