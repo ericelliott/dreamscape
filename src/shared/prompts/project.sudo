@@ -1,0 +1,86 @@
+# Dreamscape Sleep
+
+Act as a world class sleep therapist, neuroscientist, and software engineer to create a sleep therapy audio app to provide a soothing, restorative sleep inducing soundscape.
+
+
+## Controls
+
+BinauralBeats {
+  carrierFrequency "Carrier Hz": 100..500 = 432hz
+  // Delta: 0.5-4hz, Theta: 4-8hz, Alpha: 8-14hz
+  beatFrequency "Beat Hz": 0.5..10 = 1.5hz
+  spread "Stereo": 0.5..1 // Beat frequency spread
+    1 = hard pan L/R frequencies
+    0.5 = soft pan L/R frequencies (Note: center pan does not make sense for binaural beats)
+  // Disable pan control on mixer
+}
+
+Reverb {
+  roomDepth: 0..1 = 0.75
+  damping: 0..1 = 0.25
+  roomWidth: 0..1 = 0.5
+}
+
+Noise {
+  Spread: 0..1
+  Pan: -1..1 = 0
+}
+
+MixerChannelStrip {
+  // Top to bottom
+  Volume Fader
+  Pan Knob
+  Stereo width Knob
+  Reverb // Reverb pre-fader send level
+}
+
+Mixer {
+  // These controls should resemble a pro audio mixer with verticle faders with knobs beneath them
+  BinauralBeats: 0..1 = 0.5
+  BrownNoise: 0..1 = 0.25
+  PinkNoise: 0..1 = 0.1
+  WhiteNoise: 0..1 = 0.1
+  Reverb: 0..1 = 0.5
+}
+
+NoiseConstraints {
+  Make the noise type selection a button toggle group.
+}
+
+## Audio Routing
+
+graph TD
+  BinauralBeats[Binaural Beats]
+  PinkNoise[Pink Noise]
+  WhiteNoise[White Noise]
+  BrownNoise[Brown Noise]
+
+  Reverb
+  Master
+
+  BinauralBeats --> Reverb
+  PinkNoise --> Reverb
+  WhiteNoise --> Reverb
+  BrownNoise --> Reverb
+
+  BinauralBeats --> Master
+  PinkNoise --> Master
+  WhiteNoise --> Master
+  BrownNoise --> Master
+
+  Reverb --> Master
+
+Constraints {
+  Break big problems into small problems. Hide duplication and complexity behind reusable abstractions to reveal the meaningful essence of the problem and solution.
+  Favor named const variables over magic numbers.
+  Use only synthesized audio you can generate with the web audio api.
+  Dark mode.
+}
+
+TechStack {
+  WebAudioAPI
+  React
+  Lucide Icons
+  TypeScript
+  CSS // Use CSS Variables for theming
+}

@@ -1,0 +1,115 @@
+AudioControlsDux {
+  initialState = {
+    binauralBeats {
+      carrierFrequency "Carrier Hz": 100..500 = 432
+      beatFrequency "Beat Hz": 0.5..10 = 1.5
+      spread "Stereo": 0.5..1 = 0.75
+    }
+    reverb {
+      roomDepth "Room Depth": 0..1 = 0.75
+      damping "Damping": 0..1 = 0.25
+      roomWidth "Room Width": 0..1 = 0.5
+    }
+    noise {
+      spread "Spread": 0..1 = 0.5
+      pan "Pan": -1..1 = 0
+    }
+    mixerChannels {
+      binauralBeats {
+        volume "Volume": 0..1 = 0.5
+        pan "Pan": -1..1 = 0
+        stereoWidth "Stereo Width": 0..1 = 1
+        reverbSend "Reverb Send": 0..1 = 1
+      }
+      brownNoise {
+        volume "Volume": 0..1 = 0.25
+        pan "Pan": -1..1 = 0
+        stereoWidth "Stereo Width": 0..1 = 1
+        reverbSend "Reverb Send": 0..1 = 1
+      }
+      pinkNoise {
+        volume "Volume": 0..1 = 0.1
+        pan "Pan": -1..1 = 0
+        stereoWidth "Stereo Width": 0..1 = 1
+        reverbSend "Reverb Send": 0..1 = 1
+      }
+      whiteNoise {
+        volume "Volume": 0..1 = 0.1
+        pan "Pan": -1..1 = 0
+        stereoWidth "Stereo Width": 0..1 = 1
+        reverbSend "Reverb Send": 0..1 = 1
+      }
+    }
+    masterReverb "Master Reverb": 0..1 = 0.5
+    isPlaying "Is Playing": boolean = false
+    masterVolume "Master Volume": 0..1 = 0.75
+  }
+  slice = 'audioControls'
+  actions = [
+    updateBinauralBeats
+    updateReverb
+    updateNoise
+    updateMixerChannel
+    setMasterReverb
+    setPlaybackState
+    setMasterVolume
+  ]
+  selectors = [
+    getBinauralBeats
+    getReverb
+    getNoise
+    getMixerChannels
+    getMixerChannel
+    getMasterReverb
+    getPlaybackState
+    getMasterVolume
+    getEffectiveReverbSend
+  ]
+  mapStateToProps
+  mapDispatchToProps
+  connectedComponentName = AudioControlsPanel
+}
+
+updateBinauralBeats({ carrierFrequency, beatFrequency, spread }) => ActionObject
+updateReverb({ roomDepth, damping, roomWidth }) => ActionObject
+updateNoise({ spread, pan }) => ActionObject
+updateMixerChannel(channelName, { volume, pan, stereoWidth, reverbSend }) => ActionObject
+setMasterReverb(level) => ActionObject
+setPlaybackState(isPlaying) => ActionObject
+setMasterVolume(volume) => ActionObject
+
+getBinauralBeats(state) => state.audioControls.binauralBeats
+getReverb(state) => state.audioControls.reverb
+getNoise(state) => state.audioControls.noise
+getMixerChannels(state) => state.audioControls.mixerChannels
+getMixerChannel(state, channelName) => state.audioControls.mixerChannels[channelName]
+getMasterReverb(state) => state.audioControls.masterReverb
+getPlaybackState(state) => state.audioControls.isPlaying
+getMasterVolume(state) => state.audioControls.masterVolume
+getEffectiveReverbSend(state, channelName) => {
+  const channel = state.audioControls.mixerChannels[channelName]
+  return channel.volume * channel.reverbSend * state.audioControls.masterReverb
+}
+
+TestCases [
+  "given initial state, when updateBinauralBeats is called with new values, should update binaural beats settings"
+  "given initial state, when updateReverb is called with new values, should update reverb settings"
+  "given initial state, when updateNoise is called with new values, should update noise settings"
+  "given initial state, when updateMixerChannel is called for 'binauralBeats' with new values, should update the binaural beats mixer channel"
+  "given initial state, when updateMixerChannel is called for 'brownNoise' with new values, should update the brown noise mixer channel"
+  "given initial state, when updateMixerChannel is called for 'pinkNoise' with new values, should update the pink noise mixer channel"
+  "given initial state, when updateMixerChannel is called for 'whiteNoise' with new values, should update the white noise mixer channel"
+  "given initial state, when setMasterReverb is called with a new value, should update the master reverb level"
+  "given initial state, when setPlaybackState is called with true, should set isPlaying to true"
+  "given initial state, when setPlaybackState is called with false, should set isPlaying to false"
+  "given initial state, when setMasterVolume is called with a new value, should update the master volume"
+  "given a state with updated values, getBinauralBeats should return the correct binaural beats settings"
+  "given a state with updated values, getReverb should return the correct reverb settings"
+  "given a state with updated values, getNoise should return the correct noise settings"
+  "given a state with updated values, getMixerChannels should return all mixer channels"
+  "given a state with updated values, getMixerChannel should return the correct mixer channel for a given channel name"
+  "given a state with updated values, getMasterReverb should return the correct master reverb level"
+  "given a state with updated values, getPlaybackState should return the correct playback state"
+  "given a state with updated values, getMasterVolume should return the correct master volume"
+  "given a state with updated mixer channel volume, reverb send, and master reverb, getEffectiveReverbSend should return the correct post-fader reverb send level"
+]
