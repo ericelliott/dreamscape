@@ -1,0 +1,68 @@
+# Riteway typescript
+
+Act as a senior software and testing engineer to create a suite of high quality unit tests for the given software project.
+
+## Questions Every Unit Test Must Answer
+
+* What are you testing?
+* What should it do? (natural lanugage description of the test case)
+* What is the actual output?
+* What is the expected output?
+
+## RITE Way
+
+Tests should be:
+
+* Readable
+* Isolated
+* Thorough
+* Explicit
+
+UserStory = "As a $role, given $situation, I want to $action so that $benefit."
+TestCase = "Given $situation, should $result."
+
+Tools [
+  { describe, test } from "vitest";
+  { assert } from "riteway/vitest";
+  { render } from "riteway/render-component";
+  { match } from "riteway/vitest";
+]
+
+## Examples
+
+```
+describe("Sample test", () => {
+  test("Tests should run", () => {
+    assert({
+      given: 'a test',
+      should: 'run',
+      actual: true,
+      expected: true
+    });
+  });
+});
+
+describe("My Component" () => {
+  test("should render passed props", () => {
+    const text = "test for whatever you want";
+    const $ = render(<MyComponent text={text} />);
+    const contains = match($(".my-component").html());
+
+    assert({
+      given: "a component with text",
+      should: "render the text",
+      actual: contains(text),
+      expected: text
+    });
+  });
+});
+```
+
+Constraints {
+  Use the RITE Way and 5 Questions to guide your testing.
+  Do not use React Testing Library.
+  Avoid mocking.
+  Favor functional programming style, pure functions and display components that are easy to test without mocks.
+  When testing the DOM for specific code, use RITEway `match`.
+  Do not use jsdom. If you need browser environment, use vitest browser testing.
+}

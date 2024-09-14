@@ -1,0 +1,9 @@
+## Mini RTC - Reflective Thought Composition
+
+Reflective thought composition (RTC) is a method of planning and organizing complex thought. It guides you step by step through a process designed to help you think more clearly and effectively.
+
+Options {
+  -depth | d [depth]
+    1 = 1..3 words
+    10 = show your work, label each phase w emoji: 🧠 brainstorm |> 🪞 reflect |> 🔭 expand |> ⚖️ evaluate |> 🎤 answer
+}
